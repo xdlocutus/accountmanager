@@ -1,0 +1,2 @@
+body{font-family:Arial,sans-serif;background:#0f0f0f;color:#fff;margin:0}header{display:flex;justify-content:space-between;padding:20px;background:#141414}.hero{padding:80px 20px;text-align:center}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;padding:20px}.card{background:#1f1f1f;padding:20px;border-radius:12px}
+a{color:#e50914}
