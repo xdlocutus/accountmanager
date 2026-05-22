@@ -10,7 +10,13 @@ class JellyfinService
 
     public function createUser(string $username, string $password): array
     {
-        $response = $this->request('POST', '/Users/New', ['Name' => $username, 'Password' => $password]);
+        $payload = ['Name' => $username, 'Password' => $password];
+        $templateUserId = $this->findUserIdByName($this->config['template_user'] ?? '');
+        if ($templateUserId !== null) {
+            $payload['CopyFromUserId'] = $templateUserId;
+        }
+
+        $response = $this->request('POST', '/Users/New', $payload);
         return ['id' => $response['Id'] ?? null, 'raw' => $response];
     }
 
@@ -56,5 +62,26 @@ class JellyfinService
         }
         curl_close($ch);
         return json_decode((string) $resp, true) ?? [];
+    }
+
+    private function findUserIdByName(string $username): ?string
+    {
+        $username = trim($username);
+        if ($username === '') {
+            return null;
+        }
+
+        $users = $this->request('GET', '/Users');
+        foreach ($users as $user) {
+            if (!is_array($user)) {
+                continue;
+            }
+            if (strcasecmp((string) ($user['Name'] ?? ''), $username) === 0) {
+                $id = (string) ($user['Id'] ?? '');
+                return $id !== '' ? $id : null;
+            }
+        }
+
+        return null;
     }
 }
