@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../includes/bootstrap.php';
+require_once __DIR__ . '/includes/bootstrap.php';
 $error = '';
 $packages = $pdo->query('SELECT id,name FROM packages')->fetchAll();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
