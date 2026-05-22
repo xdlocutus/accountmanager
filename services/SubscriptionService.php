@@ -41,6 +41,16 @@ class SubscriptionService
         $stmt->execute([':type' => $type, ':payload' => json_encode($payload), ':status' => 'pending']);
     }
 
+    public function packages(): array { return $this->db->query('SELECT * FROM packages ORDER BY price ASC')->fetchAll(); }
+    public function addPackage(string $name, float $price, int $days, string $description): void {
+        $this->db->prepare('INSERT INTO packages (name,price,duration_days,description) VALUES (:n,:p,:d,:x)')->execute([':n'=>$name,':p'=>$price,':d'=>$days,':x'=>$description]);
+        $this->audit->log(null,'package_created',['name'=>$name,'days'=>$days]);
+    }
+    public function extendUser(int $userId, int $days): void {
+        $this->db->prepare('UPDATE users SET expires_at=DATE_ADD(COALESCE(expires_at,NOW()), INTERVAL :d DAY), status=:s WHERE id=:id')->execute([':d'=>$days,':id'=>$userId,':s'=>'active']);
+        $this->audit->log($userId,'subscription_extended',['days'=>$days]);
+    }
+
     private function getPackage(int $id): array
     {
         $stmt = $this->db->prepare('SELECT * FROM packages WHERE id=:id');

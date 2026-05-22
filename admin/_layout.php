@@ -6,7 +6,7 @@ function adminHeader(string $title): void {
 <!doctype html>
 <html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'>
 <title><?= htmlspecialchars($title) ?></title><link rel='stylesheet' href='/assets/css/style.css'></head><body>
-<header class='topbar'><div class='container topbar-inner'><div class='brand'>Admin Panel</div><a class='btn' href='/login.php'>Switch account</a></div></header>
+<header class='topbar'><div class='container topbar-inner'><div class='brand'>Admin Panel</div><a class='btn' href='/logout.php'>Logout</a></div></header>
 <main class='container admin-main'>
 <h1><?= htmlspecialchars($title) ?></h1>
 <nav class='admin-nav'>

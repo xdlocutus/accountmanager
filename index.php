@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/bootstrap.php';
-$packages = $pdo->query('SELECT * FROM packages ORDER BY price ASC')->fetchAll();
+$packages = $subscriptionService->packages();
 $settings = $pdo->query('SELECT * FROM settings LIMIT 1')->fetch() ?: ['site_name' => 'StreamBox', 'site_logo' => ''];
 ?><!doctype html>
 <html>

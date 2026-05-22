@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/bootstrap.php';
 $error = '';
-$packages = $pdo->query('SELECT id,name FROM packages')->fetchAll();
+$packages = array_map(fn($p)=>['id'=>$p['id'],'name'=>$p['name']], $subscriptionService->packages());
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!verifyCsrf($_POST['csrf_token'] ?? '')) {
         $error = 'Invalid CSRF';
