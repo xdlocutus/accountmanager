@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../includes/bootstrap.php';
+require_once __DIR__ . '/includes/bootstrap.php';
 requireAuth('user');
 $stmt = $pdo->prepare('SELECT u.*,p.name package_name FROM users u LEFT JOIN packages p ON p.id=u.package_id WHERE u.id=:id');
 $stmt->execute([':id' => $_SESSION['user']['id']]);
