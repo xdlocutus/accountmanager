@@ -42,6 +42,7 @@ function appConfig(): array
             'url' => rtrim((string) env('JELLYFIN_URL', ''), '/'),
             'api_key' => (string) env('JELLYFIN_API_KEY', ''),
             'device_id' => (string) env('JELLYFIN_DEVICE_ID', 'streaming-service'),
+            'template_user' => (string) env('JELLYFIN_TEMPLATE_USER', 'Tempelate'),
         ],
         'queue_max_retries' => (int) env('QUEUE_MAX_RETRIES', '5'),
         'rate_limit' => [
