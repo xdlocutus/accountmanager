@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $u = $userService->authenticate($_POST['email'] ?? '', $_POST['password'] ?? '');
         if ($u) {
-            $_SESSION['user'] = ['id' => $u['id'], 'role' => $u['role'], 'email' => $u['email']];
+            $userService->setSessionUser($u);
             header('Location: ' . ($u['role'] === 'admin' ? '/admin/index.php' : '/dashboard.php'));
             exit;
         }

@@ -2,7 +2,7 @@
 require_once __DIR__ . '/_layout.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && verifyCsrf($_POST['csrf_token'] ?? '')) {
     if (isset($_POST['extend_days'])) {
-        $pdo->prepare('UPDATE users SET expires_at=DATE_ADD(expires_at, INTERVAL :d DAY) WHERE id=:id')->execute([':d' => (int) $_POST['extend_days'], ':id' => (int) $_POST['user_id']]);
+        $subscriptionService->extendUser((int) $_POST['user_id'], (int) $_POST['extend_days']);
     }
     if (isset($_POST['disable'])) {
         $subscriptionService->enqueueJob('disable_user', ['user_id' => (int) $_POST['user_id'], 'jellyfin_user_id' => $_POST['jellyfin_user_id']]);
@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verifyCsrf($_POST['csrf_token'] ?? 
         $subscriptionService->enqueueJob('enable_user', ['user_id' => (int) $_POST['user_id'], 'jellyfin_user_id' => $_POST['jellyfin_user_id']]);
     }
 }
-$users = $pdo->query('SELECT * FROM users ORDER BY created_at DESC')->fetchAll();
+$users = $userService->listUsers();
 adminHeader('User Management');
 ?>
 <div class='table-wrap'><table><thead><tr><th>Email</th><th>Status</th><th>Expires</th><th>Actions</th></tr></thead><tbody>

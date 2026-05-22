@@ -1,11 +1,9 @@
 <?php
 require_once __DIR__ . '/_layout.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && verifyCsrf($_POST['csrf_token'] ?? '')) {
-    $pdo->prepare('INSERT INTO packages (name,price,duration_days,description) VALUES (:n,:p,:d,:x)')->execute([
-        ':n' => $_POST['name'], ':p' => $_POST['price'], ':d' => $_POST['duration_days'], ':x' => $_POST['description']
-    ]);
+    $subscriptionService->addPackage((string) $_POST['name'], (float) $_POST['price'], (int) $_POST['duration_days'], (string) ($_POST['description'] ?? ''));
 }
-$pkgs = $pdo->query('SELECT * FROM packages ORDER BY id DESC')->fetchAll();
+$pkgs = array_reverse($subscriptionService->packages());
 adminHeader('Packages');
 ?>
 <form class='card' method='post'>

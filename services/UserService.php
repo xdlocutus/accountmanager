@@ -33,4 +33,24 @@ class UserService
         }
         return $user;
     }
+
+    public function setSessionUser(array $user): void
+    {
+        session_regenerate_id(true);
+        $_SESSION['user'] = ['id' => (int) $user['id'], 'role' => $user['role'], 'email' => $user['email']];
+        $this->audit->log((int) $user['id'], 'user_login');
+    }
+
+    public function userDashboard(int $userId): array
+    {
+        $stmt = $this->db->prepare('SELECT u.*,p.name package_name FROM users u LEFT JOIN packages p ON p.id=u.package_id WHERE u.id=:id');
+        $stmt->execute([':id' => $userId]);
+        return $stmt->fetch() ?: [];
+    }
+
+    public function listUsers(): array
+    {
+        return $this->db->query('SELECT * FROM users ORDER BY created_at DESC')->fetchAll();
+    }
 }
+
