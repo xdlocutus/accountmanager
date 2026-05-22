@@ -14,10 +14,9 @@ class UserService
             throw new InvalidArgumentException('Invalid registration data');
         }
         $hash = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $this->db->prepare('INSERT INTO users (email, password_hash, role, status, created_at) VALUES (:email, :password_hash, :role, :status, NOW())');
-        $stmt->execute([':email' => strtolower($email), ':password_hash' => $hash, ':role' => 'user', ':status' => 'active']);
+        $stmt = $this->db->prepare('INSERT INTO users (email, password_hash, role, package_id, status, created_at) VALUES (:email, :password_hash, :role, :package_id, :status, NOW())');
+        $stmt->execute([':email' => strtolower($email), ':password_hash' => $hash, ':role' => 'user', ':package_id' => $packageId, ':status' => 'pending_payment']);
         $userId = (int) $this->db->lastInsertId();
-        $this->subscriptionService->assignPackage($userId, $packageId);
         $this->subscriptionService->enqueueJob('create_user', ['user_id' => $userId, 'email' => $email, 'password' => $password]);
         $this->audit->log($userId, 'user_registered');
         return $userId;
@@ -53,4 +52,3 @@ class UserService
         return $this->db->query('SELECT * FROM users ORDER BY created_at DESC')->fetchAll();
     }
 }
-

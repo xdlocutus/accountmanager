@@ -51,6 +51,18 @@ class SubscriptionService
         $this->audit->log($userId,'subscription_extended',['days'=>$days]);
     }
 
+    public function confirmPayment(int $userId): void
+    {
+        $stmt = $this->db->prepare('SELECT package_id FROM users WHERE id=:id LIMIT 1');
+        $stmt->execute([':id' => $userId]);
+        $user = $stmt->fetch();
+        if (!$user || empty($user['package_id'])) {
+            throw new InvalidArgumentException('User or package not found');
+        }
+        $this->assignPackage($userId, (int) $user['package_id']);
+        $this->audit->log($userId, 'payment_confirmed');
+    }
+
     private function getPackage(int $id): array
     {
         $stmt = $this->db->prepare('SELECT * FROM packages WHERE id=:id');

@@ -10,6 +10,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verifyCsrf($_POST['csrf_token'] ?? 
     if (isset($_POST['enable'])) {
         $subscriptionService->enqueueJob('enable_user', ['user_id' => (int) $_POST['user_id'], 'jellyfin_user_id' => $_POST['jellyfin_user_id']]);
     }
+    if (isset($_POST['confirm_payment'])) {
+        $subscriptionService->confirmPayment((int) $_POST['user_id']);
+    }
 }
 $users = $userService->listUsers();
 adminHeader('User Management');
@@ -24,6 +27,9 @@ adminHeader('User Management');
 <form method='post'><input type='hidden' name='csrf_token' value='<?= csrfToken() ?>'><input type='hidden' name='user_id' value='<?= (int) $u['id'] ?>'><input type='hidden' name='jellyfin_user_id' value='<?= htmlspecialchars((string) $u['jellyfin_user_id']) ?>'><input type='number' min='1' name='extend_days' placeholder='Days'><button class='btn' type='submit'>Extend</button></form>
 <form method='post'><input type='hidden' name='csrf_token' value='<?= csrfToken() ?>'><input type='hidden' name='user_id' value='<?= (int) $u['id'] ?>'><input type='hidden' name='jellyfin_user_id' value='<?= htmlspecialchars((string) $u['jellyfin_user_id']) ?>'><button class='btn' name='disable' value='1' type='submit'>Disable</button></form>
 <form method='post'><input type='hidden' name='csrf_token' value='<?= csrfToken() ?>'><input type='hidden' name='user_id' value='<?= (int) $u['id'] ?>'><input type='hidden' name='jellyfin_user_id' value='<?= htmlspecialchars((string) $u['jellyfin_user_id']) ?>'><button class='btn btn-primary' name='enable' value='1' type='submit'>Enable</button></form>
+<?php if (($u['status'] ?? '') === 'pending_payment'): ?>
+<form method='post'><input type='hidden' name='csrf_token' value='<?= csrfToken() ?>'><input type='hidden' name='user_id' value='<?= (int) $u['id'] ?>'><button class='btn btn-primary' name='confirm_payment' value='1' type='submit'>Confirm Payment</button></form>
+<?php endif; ?>
 </td></tr>
 <?php endforeach; ?>
 </tbody></table></div>
