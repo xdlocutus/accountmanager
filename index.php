@@ -31,6 +31,7 @@ $settings = $pdo->query('SELECT * FROM settings LIMIT 1')->fetch() ?: ['site_nam
           <span class='pill'><?= (int) $pkg['duration_days'] ?> days</span>
         </div>
         <p class='muted'><?= htmlspecialchars((string) ($pkg['description'] ?? 'Great value plan for uninterrupted streaming.')) ?></p>
+        <a class='btn btn-primary' href='/register.php?package_id=<?= (int) $pkg['id'] ?>'>Sign up</a>
       </article>
     <?php endforeach; ?>
   </section>

@@ -2,6 +2,7 @@
 require_once __DIR__ . '/includes/bootstrap.php';
 $error = '';
 $packages = array_map(fn($p)=>['id'=>$p['id'],'name'=>$p['name']], $subscriptionService->packages());
+$selectedPackageId = (int) ($_GET['package_id'] ?? $_POST['package_id'] ?? 0);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!verifyCsrf($_POST['csrf_token'] ?? '')) {
         $error = 'Invalid CSRF';
@@ -21,12 +22,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>Register</title><link rel='stylesheet' href='/assets/css/style.css'></head><body>
 <main class='auth-wrap'>
   <form class='auth-card' method='post'>
-    <h1>Create account</h1><p>Pick a plan and start your subscription instantly.</p>
+    <h1>Create account</h1><p>Pick a plan and submit your signup. Your account stays pending until payment is confirmed by admin.</p>
     <?php if ($error): ?><div class='alert alert-danger'><?= htmlspecialchars($error) ?></div><?php endif; ?>
     <input type='hidden' name='csrf_token' value='<?= csrfToken() ?>'>
     <label>Email</label><input name='email' type='email' required>
     <label>Password</label><input type='password' name='password' minlength='8' required>
-    <label>Package</label><select name='package_id' required><?php foreach ($packages as $p): ?><option value='<?= $p['id'] ?>'><?= htmlspecialchars($p['name']) ?></option><?php endforeach; ?></select>
+    <label>Package</label><select name='package_id' required><?php foreach ($packages as $p): ?><option value='<?= $p['id'] ?>' <?= $selectedPackageId === (int) $p['id'] ? 'selected' : '' ?>><?= htmlspecialchars($p['name']) ?></option><?php endforeach; ?></select>
     <button class='btn btn-primary' style='width:100%'>Register</button>
     <p class='muted'>Already registered? <a href='/login.php'>Login</a></p>
   </form>
